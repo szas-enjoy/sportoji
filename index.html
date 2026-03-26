@@ -11,205 +11,216 @@
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-
-gtag('config', 'G-XXXXXXX', {
-  'anonymize_ip': true,
-  'client_storage': 'none'
-});
+gtag('config', 'G-XXXXXXX', { 'anonymize_ip': true, 'client_storage': 'none' });
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 body {
   margin: 0;
-  font-family: system-ui;
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: white;
+  font-family: 'Inter', sans-serif;
+  background: #0f172a;
+  color: #f8fafc;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
+
 .container {
-  background: rgba(255,255,255,0.05);
-  padding: 25px;
+  background: #1e293b;
+  padding: 30px;
   border-radius: 20px;
-  width: 90%;
-  max-width: 420px;
+  width: 95%;
+  max-width: 500px;
   text-align: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
+
+h1 {
+  margin-bottom: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
 .stats {
   display: flex;
   justify-content: space-between;
   font-size: 0.9em;
   opacity: 0.8;
+  margin-bottom: 10px;
 }
+
+.card {
+  background: #334155;
+  padding: 25px 20px;
+  border-radius: 15px;
+  margin: 15px 0;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
 .emoji {
   font-size: 3em;
-  margin: 20px 0;
+  margin-bottom: 15px;
 }
+
 input {
   width: 100%;
   padding: 12px;
   border-radius: 10px;
   border: none;
   text-align: center;
-}
-button {
+  font-size: 1em;
   margin-top: 10px;
+  background: #1e293b;
+  color: #f8fafc;
+}
+
+button {
+  margin-top: 15px;
   padding: 12px;
   width: 100%;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
-  background: #22c55e;
+  background: linear-gradient(90deg,#22c55e,#14b8a6);
   color: white;
+  font-weight: 600;
+  font-size: 1em;
   cursor: pointer;
+  transition: background 0.3s;
 }
+
+button:hover {
+  background: linear-gradient(90deg,#14b8a6,#22c55e);
+}
+
 #hint {
   margin-top: 10px;
   font-size: 0.9em;
   opacity: 0.7;
 }
+
 .hearts {
+  font-size: 1.2em;
   margin: 10px 0;
+}
+
+#result {
+  margin-top: 15px;
+  min-height: 30px;
+  font-weight: 600;
 }
 </style>
 </head>
 
 <body>
-
 <div class="container">
   <h1>🏆 Sportoji</h1>
-
   <div class="stats">
     <div id="level"></div>
     <div id="score"></div>
   </div>
-
   <div class="hearts" id="lives"></div>
-  <div class="emoji" id="emoji"></div>
-  <div id="hint"></div>
 
-  <input id="answer" placeholder="Ta réponse..." autofocus>
-  <button onclick="checkAnswer()">Valider</button>
+  <div class="card">
+    <div class="emoji" id="emoji"></div>
+    <div id="hint"></div>
+    <input id="answer" placeholder="Ta réponse..." autofocus>
+    <button onclick="checkAnswer()">Valider</button>
+  </div>
 
   <div id="result"></div>
 </div>
 
 <script>
-
-// ===== QUESTIONS =====
-// type = indice affiché
-
+// ===== QUESTIONS 4 niveaux, 5 questions chacun =====
 const questions = [
+  // Niveau 1 (très facile)
   {id:"jordan", emoji:"🏀🐐🇺🇸👑🔥", answers:["jordan","michael jordan"], level:1, type:"👤 Joueur"},
-  {id:"mbappe", emoji:"⚽🇫🇷🚀🐢🏆", answers:["mbappe","mbappé"], level:1, type:"👤 Joueur"},
   {id:"messi", emoji:"⚽🇦🇷🐐👑🏆", answers:["messi"], level:1, type:"👤 Joueur"},
+  {id:"mbappe", emoji:"⚽🇫🇷🚀🐢🏆", answers:["mbappe","mbappé"], level:1, type:"👤 Joueur"},
+  {id:"psg", emoji:"⚽🇫🇷🔵🔴", answers:["psg","paris saint germain"], level:1, type:"🏟️ Club"},
+  {id:"om", emoji:"⚽🔵⚪", answers:["om","marseille"], level:1, type:"🏟️ Club"},
+
+  // Niveau 2
   {id:"ronaldo", emoji:"⚽🇵🇹👑🔥", answers:["ronaldo"], level:2, type:"👤 Joueur"},
   {id:"zidane", emoji:"⚽🇫🇷🧠🎯", answers:["zidane"], level:2, type:"👤 Joueur"},
   {id:"wembanyama", emoji:"🏀🇫🇷🦒🚀", answers:["wembanyama","wemby"], level:2, type:"👤 Joueur"},
   {id:"tiger", emoji:"⛳🐅🏆", answers:["tiger woods","woods"], level:2, type:"👤 Joueur"},
   {id:"lebron", emoji:"🏀👑🇺🇸", answers:["lebron"], level:2, type:"👤 Joueur"},
-  {id:"curry", emoji:"🏀🎯🔥", answers:["curry"], level:2, type:"👤 Joueur"},
 
-  {id:"psg", emoji:"⚽🇫🇷🔵🔴", answers:["psg","paris saint germain"], level:2, type:"🏟️ Club"},
-  {id:"om", emoji:"⚽🔵⚪", answers:["om","marseille"], level:3, type:"🏟️ Club"},
-  {id:"real", emoji:"⚽👑⚪", answers:["real madrid"], level:2, type:"🏟️ Club"},
-  {id:"barca", emoji:"⚽🔵🔴🐐", answers:["barcelona","barcelone"], level:2, type:"🏟️ Club"},
+  // Niveau 3
+  {id:"curry", emoji:"🏀🎯🔥", answers:["curry"], level:3, type:"👤 Joueur"},
+  {id:"real", emoji:"⚽👑⚪", answers:["real madrid"], level:3, type:"🏟️ Club"},
+  {id:"barca", emoji:"⚽🔵🔴🐐", answers:["barcelona","barcelone"], level:3, type:"🏟️ Club"},
+  {id:"ldc", emoji:"⚽🏆🌍", answers:["ligue des champions","champions league"], level:3, type:"🏆 Compétition"},
+  {id:"tour", emoji:"🚴🇫🇷⛰️", answers:["tour de france"], level:3, type:"🏆 Compétition"},
 
-  {id:"ldc", emoji:"⚽🏆🌍", answers:["ligue des champions","champions league"], level:2, type:"🏆 Compétition"},
-  {id:"cdm", emoji:"⚽🌍🏆", answers:["coupe du monde","world cup"], level:2, type:"🏆 Compétition"},
-  {id:"nba", emoji:"🏀🇺🇸🔥", answers:["nba"], level:2, type:"🏆 Ligue"},
-  {id:"tour", emoji:"🚴🇫🇷⛰️", answers:["tour de france"], level:2, type:"🏆 Compétition"},
-
-  {id:"nadal", emoji:"🎾🐂🇪🇸", answers:["nadal"], level:3, type:"👤 Joueur"},
-  {id:"djokovic", emoji:"🎾🇷🇸🧱", answers:["djokovic"], level:3, type:"👤 Joueur"},
-  {id:"federer", emoji:"🎾🇨🇭👑", answers:["federer"], level:3, type:"👤 Joueur"}
+  // Niveau 4 (difficile)
+  {id:"nadal", emoji:"🎾🐂🇪🇸", answers:["nadal"], level:4, type:"👤 Joueur"},
+  {id:"djokovic", emoji:"🎾🇷🇸🧱", answers:["djokovic"], level:4, type:"👤 Joueur"},
+  {id:"federer", emoji:"🎾🇨🇭👑", answers:["federer"], level:4, type:"👤 Joueur"},
+  {id:"cdm", emoji:"⚽🌍🏆", answers:["coupe du monde","world cup"], level:4, type:"🏆 Compétition"},
+  {id:"verstappen", emoji:"🏎️🇳🇱🦁", answers:["verstappen","max verstappen"], level:4, type:"👤 Pilote"}
 ];
 
-// ===== GAME =====
-
-let game = questions.sort(() => Math.random() - 0.5);
-let current = 0;
-let score = 0;
-let lives = 5;
-
-function normalize(text) {
-  return text.toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
+// ===== GAME LOGIC =====
+let game = [];
+function pickRandom(questions, count, level) {
+  const lvlQuestions = questions.filter(q=>q.level===level);
+  const shuffled = lvlQuestions.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0,count);
 }
 
-function updateLives() {
-  document.getElementById("lives").textContent =
-    "❤️".repeat(lives) + "🖤".repeat(5-lives);
-}
+// Crée game de 20 questions (5 par niveau)
+for(let lvl=1;lvl<=4;lvl++){game = game.concat(pickRandom(questions,5,lvl));}
 
-function loadQuestion() {
+let current=0, score=0, lives=5;
+
+function normalize(text){return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();}
+function updateLives(){document.getElementById("lives").textContent="❤️".repeat(lives)+"🖤".repeat(5-lives);}
+function loadQuestion(){
   const q = game[current];
-  document.getElementById("emoji").textContent = q.emoji;
-  document.getElementById("level").textContent = "Niveau " + q.level;
-  document.getElementById("score").textContent = score + "/" + game.length;
-  document.getElementById("hint").textContent = "Indice : " + q.type;
-  document.getElementById("answer").value = "";
-  document.getElementById("result").textContent = "";
+  document.getElementById("emoji").textContent=q.emoji;
+  document.getElementById("level").textContent="Niveau "+q.level;
+  document.getElementById("score").textContent=score+"/"+game.length;
+  document.getElementById("hint").textContent="Indice : "+q.type;
+  document.getElementById("answer").value="";
+  document.getElementById("result").textContent="";
 }
+function checkAnswer(){
+  const input=normalize(document.getElementById("answer").value);
+  const valid=game[current].answers.map(normalize);
+  let correct=valid.includes(input);
 
-function checkAnswer() {
-  const input = normalize(document.getElementById("answer").value);
-  const valid = game[current].answers.map(normalize);
+  gtag('event','answer',{result: correct?'correct':'wrong'});
 
-  let correct = valid.includes(input);
+  if(correct){score++;document.getElementById("result").textContent="✅ Bien joué !";}
+  else{lives--;document.getElementById("result").textContent="❌ "+game[current].answers[0];}
 
-  // tracking
-  gtag('event', 'answer', {result: correct ? 'correct' : 'wrong'});
-
-  if (correct) {
-    score++;
-    document.getElementById("result").textContent = "✅ Bien joué !";
-  } else {
-    lives--;
-    document.getElementById("result").textContent =
-      "❌ " + game[current].answers[0];
-  }
-
-  updateLives();
-  current++;
-
-  if (lives <= 0 || current >= game.length) {
-    endGame();
-    return;
-  }
-
-  setTimeout(loadQuestion, 800);
+  updateLives(); current++;
+  if(lives<=0||current>=game.length){endGame();return;}
+  setTimeout(loadQuestion,800);
 }
-
-function endGame() {
-  document.getElementById("emoji").textContent = "🏁";
-  document.getElementById("hint").textContent = "";
-
-  const message = "Score " + score + "/" + game.length;
-
-  document.getElementById("result").innerHTML =
-    message + "<br><button onclick='shareScore()'>Partager</button>";
-
-  gtag('event', 'game_end', {score: score});
+function endGame(){
+  document.getElementById("emoji").textContent="🏁";
+  document.getElementById("hint").textContent="";
+  const message="Score "+score+"/"+game.length;
+  document.getElementById("result").innerHTML=message+"<br><button onclick='shareScore()'>Partager</button>";
+  gtag('event','game_end',{score:score});
 }
+function shareScore(){navigator.clipboard.writeText("🏆 Sportoji\nScore: "+score+"/"+game.length); alert("Score copié !");}
 
-function shareScore() {
-  const text = "🏆 Sportoji\nScore: " + score + "/" + game.length;
-  navigator.clipboard.writeText(text);
-  alert("Score copié !");
-}
+document.getElementById("answer").addEventListener("keypress",e=>{if(e.key==="Enter")checkAnswer();});
 
-document.getElementById("answer").addEventListener("keypress", e => {
-  if (e.key === "Enter") checkAnswer();
-});
-
-updateLives();
-loadQuestion();
-
+updateLives(); loadQuestion();
 </script>
-
 </body>
 </html>
